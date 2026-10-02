@@ -8,6 +8,9 @@ if [ "$#" -eq 0 ]; then
 fi
 
 aur repo --list-path | while read -r repo_path; do
-  repo-remove --sign "$repo_path" "$@" ||:
+  repo-remove \
+    "$( [ -f "$repo_path.sig" ] && echo -n "--sign")" \
+    "$repo_path" \
+    "$@" ||:
   paccache -c "${repo_path%/*}" -rvk0 "$@" ||:
 done
